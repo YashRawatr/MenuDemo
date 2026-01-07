@@ -1,5 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- Audio Setup ---
+    const bgMusic = document.getElementById('bg-music');
+    if (bgMusic) {
+        bgMusic.volume = 0.5;
+        // Try to play immediately
+        const playMusic = () => {
+            bgMusic.play().catch(error => {
+                // console.log("Autoplay blocked");
+            });
+        };
+        playMusic();
+
+        // Fallback for user interaction
+        const enableAudio = () => {
+            if (bgMusic.paused) {
+                bgMusic.play();
+            }
+            document.removeEventListener('click', enableAudio);
+        };
+        document.addEventListener('click', enableAudio);
+    }
+
     // Tab Switching Logic
     const navBtns = document.querySelectorAll('.nav-btn');
     const tabContents = document.querySelectorAll('.tab-content');

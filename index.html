@@ -15,6 +15,17 @@
 <body>
     <div class="overlay"></div>
     <div class="scanlines"></div>
+    <div class="rain"></div>
+    <div class="fog-container">
+        <div class="fog-layer one"></div>
+        <div class="fog-layer two"></div>
+    </div>
+    <audio id="bg-music" loop>
+        <source src="assets/loop-menu-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="ui-click" preload="auto">
+        <source src="assets/click.mp3" type="audio/mpeg">
+    </audio>
 
     <main class="menu-container" id="main-menu">
         <header class="game-title">
@@ -74,6 +85,263 @@
         <span>V 0.9.2 [BETA]</span>
         <span>ID: 884-219-X</span>
     </footer>
+
+    <!-- Settings Screen (Merged from settings.html) -->
+    <section id="settings-screen" class="hidden"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:50;">
+        <div class="settings-container">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <header class="sidebar-header">
+                    <h1>SETTINGS</h1>
+                </header>
+                <nav class="sidebar-nav">
+                    <button class="nav-btn active" data-tab="monitor">MONITOR</button>
+                    <button class="nav-btn" data-tab="graphics">GRAPHICS</button>
+                    <button class="nav-btn" data-tab="audio">AUDIO</button>
+                    <button class="nav-btn" data-tab="controls">CONTROLS</button>
+                </nav>
+                <div class="sidebar-footer">
+                    <button class="action-btn" id="btn-back">BACK</button>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content-panel">
+
+                <!-- MONITOR TAB -->
+                <section id="monitor" class="tab-content active">
+                    <div class="section-group">
+                        <h2>DISPLAY</h2>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Display Mode</label>
+                                <span class="subtext">Select the window presentation mode.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select>
+                                    <option>Fullscreen</option>
+                                    <option>Borderles Window</option>
+                                    <option>Windowed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Resolution</label>
+                                <span class="subtext">Screen resolution pixel dimensions.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select>
+                                    <option>3840 x 2160 (16:9)</option>
+                                    <option selected>2560 x 1440 (16:9)</option>
+                                    <option>1920 x 1080 (16:9)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Run V-Sync</label>
+                                <span class="subtext">Synchronize frame rate to refresh rate.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>HDR Mode</label>
+                                <span class="subtext">High Dynamic Range for supported displays.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                                <button class="small-btn">CALIBRATE</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-group">
+                        <h2>CALIBRATION</h2>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Brightness</label>
+                                <span class="subtext">Adjust global scene brightness.</span>
+                            </div>
+                            <div class="setting-control range-group">
+                                <input type="range" class="range-slider" min="0" max="100" value="50">
+                                <span class="range-value">50</span>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Field of View</label>
+                                <span class="subtext">Horizontal viewing angle.</span>
+                            </div>
+                            <div class="setting-control range-group">
+                                <input type="range" class="range-slider" min="60" max="120" value="90">
+                                <span class="range-value">90</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GRAPHICS TAB -->
+                <section id="graphics" class="tab-content">
+                    <div class="section-group">
+                        <h2>PRESET</h2>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Global Quality</label>
+                                <span class="subtext">Automatically adjust settings for performance.</span>
+                            </div>
+                            <div class="setting-control">
+                                <div class="step-selector">
+                                    <button class="step-btn">
+                                        << /button>
+                                            <span class="step-value">HIGH</span>
+                                            <button class="step-btn">></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-group">
+                        <h2>DETAILS</h2>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Texture Quality</label>
+                            </div>
+                            <div class="setting-control">
+                                <select>
+                                    <option>Low</option>
+                                    <option>Medium</option>
+                                    <option selected>High</option>
+                                    <option>Ultra</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Shadow Quality</label>
+                            </div>
+                            <div class="setting-control">
+                                <select>
+                                    <option>Low</option>
+                                    <option selected>Medium</option>
+                                    <option>High</option>
+                                    <option>Ultra</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Anti-Aliasing</label>
+                            </div>
+                            <div class="setting-control">
+                                <select>
+                                    <option>Off</option>
+                                    <option>FXAA</option>
+                                    <option selected>TAA</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-group">
+                        <h2>POST PROCESSING</h2>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Motion Blur</label>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Film Grain</label>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-group">
+                        <h2>ADVANCED</h2>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Ray Tracing</label>
+                                <span class="subtext warning">High performance cost. Requires supported hardware.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Upscaling Method</label>
+                            </div>
+                            <div class="setting-control">
+                                <select>
+                                    <option>Off</option>
+                                    <option>DLSS</option>
+                                    <option selected>FSR 2.0</option>
+                                    <option>XeSS</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AUDIO TAB -->
+                <section id="audio" class="tab-content">
+                    <div class="section-group">
+                        <h2>VOLUME</h2>
+                        <div class="setting-row">
+                            <div class="setting-info"><label>Master Volume</label></div>
+                            <div class="setting-control range-group"><input type="range" id="master-volume"
+                                    class="range-slider" value="50"><span class="range-value">50</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CONTROLS TAB -->
+                <section id="controls" class="tab-content">
+                    <div class="section-group">
+                        <h2>MOUSE</h2>
+                        <div class="setting-row">
+                            <div class="setting-info"><label>Sensitivity</label></div>
+                            <div class="setting-control range-group"><input type="range" class="range-slider"
+                                    value="2.5" step="0.1"><span class="range-value">2.5</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bottom Action Bar -->
+                <footer class="content-footer">
+                    <button class="action-btn secondary" id="btn-reset">RESET DEFAULTS</button>
+                    <button class="action-btn primary" id="btn-apply">APPLY SETTINGS</button>
+                </footer>
+
+            </main>
+        </div>
+    </section>
 
     <script src="script.js"></script>
 </body>

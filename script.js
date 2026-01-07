@@ -23,6 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let loadingInterval;
 
+    // --- Audio Setup ---
+    const bgMusic = document.getElementById('bg-music');
+    bgMusic.volume = 0.5; // Set volume to 50%
+
+    // Try to play immediately
+    const playMusic = () => {
+        bgMusic.play().catch(error => {
+            console.log("Autoplay blocked, waiting for interaction...");
+        });
+    };
+    playMusic();
+
+    // Ensure music starts on first interaction if autoplay failed
+    const enableAudio = () => {
+        if (bgMusic.paused) {
+            bgMusic.play();
+        }
+        document.removeEventListener('click', enableAudio);
+    };
+    document.addEventListener('click', enableAudio);
+
     // --- Helpers ---
     const show = (el) => el.classList.remove('hidden');
     const hide = (el) => el.classList.add('hidden');
@@ -198,54 +219,82 @@ document.addEventListener('DOMContentLoaded', () => {
         tabBtns[0].click();
     };
 
-    // Options
-    btnOptions.addEventListener('click', () => {
-        // Redirect to standalone settings page
-        window.location.href = 'settings.html';
-    });
+    // --- Settings / Options Logic (Merged) ---
 
-    // Archives (No tabs, just content)
-    btnArchives.addEventListener('click', () => {
-        const tabsContainer = document.getElementById('options-tabs');
-        hide(tabsContainer); // Hide tabs for archives
+    // Elements
+    const settingsScreen = document.getElementById('settings-screen');
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
 
-        openModal("ARCHIVES", `
-            <div style="padding: 1rem;">
-                <p style="margin-bottom:1rem; border-left: 2px solid #fff; padding-left: 10px;">
-                    <strong>FILE 001: SUBJECT ALPHA</strong><br>
-                    <span style="font-size:0.8rem; color:#666;">DATE: 2084.10.21</span><br>
-                    Subject shows promising adaptation to the neural interface. Rejection rate is below 2%.
-                </p>
-                <p style="margin-bottom:1rem; border-left: 2px solid #333; padding-left: 10px;">
-                    <strong>FILE 002: THE INCIDENT</strong><br>
-                    <span style="font-size:0.8rem; color:#666;">DATE: 2084.11.05</span><br>
-                    Unexpected surge in sector 7. Containment breached.
-                </p>
-                <p style="color:#444;">[REMAINING DATA CORRUPTED]</p>
-            </div>
-        `);
-    });
-
-    // Back from Modal
-    btnModalBack.addEventListener('click', () => {
-        resetMenu();
-    });
-
-    // Exit
-    btnExit.addEventListener('click', () => {
-        hide(mainMenu);
-        show(exitScreen);
-        // Optional: Attempt to close window (often blocked)
-        // window.close(); 
-    });
-
-    // Menu Item Hover Effects (Sound Placeholders)
-    const allButtons = document.querySelectorAll('button');
-    allButtons.forEach(btn => {
-        btn.addEventListener('mouseenter', () => {
-            // console.log("Hover sound");
+    // Tab Switching
+    navBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            navBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            const targetId = btn.getAttribute('data-tab');
+            const targetContent = document.getElementById(targetId);
+            if (targetContent) targetContent.classList.add('active');
         });
     });
 
-    // Glitch effect removed
+    // Slider Updates
+    const rangeInputs = document.querySelectorAll('.range-slider');
+    rangeInputs.forEach(input => {
+        input.addEventListener('input', () => {
+            const nextSpan = input.parentElement.querySelector('.range-value');
+            if (nextSpan) nextSpan.innerText = input.value;
+        });
+    });
+
+    // Volume Control
+    const masterVolume = document.getElementById('master-volume');
+    if (masterVolume && bgMusic) {
+        masterVolume.addEventListener('input', (e) => {
+            bgMusic.volume = e.target.value / 100;
+        });
+    }
+
+    // Options Button (Show Settings Overlay)
+    btnOptions.addEventListener('click', () => {
+        hide(mainMenu);
+        show(settingsScreen);
+    });
+
+    // Back Button (Hide Settings Overlay)
+    const btnBack = document.getElementById('btn-back');
+    if (btnBack) {
+        btnBack.addEventListener('click', () => {
+            hide(settingsScreen);
+            show(mainMenu);
+        });
+    }
+
+    // Apply Button
+    const btnApply = document.getElementById('btn-apply');
+    if (btnApply) {
+        btnApply.addEventListener('click', () => {
+            const originalText = btnApply.innerText;
+            btnApply.innerText = "SAVING...";
+            btnApply.style.opacity = "0.7";
+            setTimeout(() => {
+                btnApply.innerText = "SETTINGS SAVED";
+                btnApply.style.opacity = "1";
+                setTimeout(() => {
+                    btnApply.innerText = originalText;
+                }, 1500);
+            }, 800);
+        });
+    }
+
+    // Reset Button
+    const btnReset = document.getElementById('btn-reset');
+    if (btnReset) {
+        btnReset.addEventListener('click', () => {
+            if (confirm("Reset all settings to default?")) {
+                // Reset logic could go here
+                alert("Settings reset.");
+            }
+        });
+    }
 });
